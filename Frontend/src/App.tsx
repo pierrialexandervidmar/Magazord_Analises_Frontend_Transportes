@@ -90,7 +90,7 @@ export function App() {
   // ESTRUTURA RETORNADA AO FRONTEND =========================================================================
   return (
     <main className="h-screen text-zinc-300 flex flex-col gap-10 items-center justify-start m-5">
-      <h1 className="text-emerald-500 text-2xl font-semibold mt-10">Análise de cotações</h1>
+      <h1 className="text-emerald-500 text-2xl font-semibold mt-5">Análise de cotações</h1>
       <form
         onSubmit={handleSubmit(createUser)}
         className='flex flex-col gap-2 w-full max-w-screen-2xl'
