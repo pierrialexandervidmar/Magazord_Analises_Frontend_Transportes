@@ -26,6 +26,7 @@ const createUserFormSchema = z.object({
       }),
     idPrazo: z.coerce.number(),
     idPreco: z.coerce.number(),
+    idTransf: z.coerce.number(),
   })).min(1, 'Insira pelo menos uma sigla e/ou tabela')
 })
 
@@ -57,7 +58,17 @@ export function App() {
     append({
       sigla: '',
       idPrazo: 0,
-      idPreco: 0
+      idPreco: 0,
+      idTransf: 0
+    })
+  }
+
+  function removerSigla() {
+    remove({
+      sigla: '',
+      idPrazo: 0,
+      idPreco: 0,
+      idTransf: 0
     })
   }
 
@@ -78,11 +89,11 @@ export function App() {
 
   // ESTRUTURA RETORNADA AO FRONTEND =========================================================================
   return (
-    <main className="h-screen bg-zinc-950 text-zinc-300 flex flex-col gap-10 items-center justify-start">
-      <h1 className="text-emerald-500 text-2xl font-semibold m-5">Análise de cotações</h1>
+    <main className="h-screen text-zinc-300 flex flex-col gap-10 items-center justify-start m-5">
+      <h1 className="text-emerald-500 text-2xl font-semibold mt-10">Análise de cotações</h1>
       <form
         onSubmit={handleSubmit(createUser)}
-        className='flex flex-col gap-2 w-full max-w-screen-xl'
+        className='flex flex-col gap-2 w-full max-w-screen-2xl'
       >
 
         {/* FORMULARIO - IDENTIFICADORES */}
@@ -124,15 +135,25 @@ export function App() {
 
         {/* FORMULÁRIO - TABELAS PARA COTAÇÃO */}
         <div className='flex flex-col gap-1'>
-          <label htmlFor="" className="flex items-center justify-between">
-            Sigla & Prazo & Preço
+          <label htmlFor="" className="flex items-center justify-end">
+  
 
             <button
               type='button'
               onClick={addNewTech}
-              className="text-emerald-500 text-sm"
+              className="text-white text-sm mx-2 bg-emerald-500 rounded hover:bg-emerald-600 p-2 mb-5"
+              title="Clique aqui para adicinoar a sigla - SIGLA + PRAZO + PREÇO + TRANSFERÊNCIA"              
             >
-              Adicionar
+              Adicionar Sigla
+            </button>
+
+            <button
+              type='button'
+              onClick={removerSigla}
+              className="text-white text-sm mx-2 bg-red-500 rounded hover:bg-red-600 p-2 mb-5"
+              title="Clique aqui para remover a sigla - SIGLA + PRAZO + PREÇO + TRANSFERÊNCIA"
+            >
+              Remover Sigla
             </button>
           </label>
 
@@ -147,6 +168,7 @@ export function App() {
                     type="text"
                     className='w-16 first-letter:border text- border-zinc-600 shadow-sm rounded h-8 px-1 bg-zinc-800 text-white'
                     {...register(`tabs.${index}.sigla`)}
+                    title="Adicione a SIGLA"
                   />
                   {errors.tabs?.[index]?.sigla && <span className='text-red-500 text-sm'>{errors.tabs?.[index]?.sigla.message}</span>}
                 </div>
@@ -156,6 +178,7 @@ export function App() {
                     type="text"
                     className='input-number-tab w-14 appearance-none border border-zinc-600 shadow-sm rounded h-8 px-1 bg-zinc-800 text-white'
                     {...register(`tabs.${index}.idPrazo`)}
+                    title="Adicione ID de PRAZO"
                   />
                   {/* {errors.tabs?.[index]?.idPrazo && <span className='text-red-500 text-sm'>{errors.tabs?.[index]?.idPrazo.message}</span>} */}
                 </div>
@@ -165,6 +188,17 @@ export function App() {
                     type="text"
                     className='input-number-tab w-14 appearance-none border border-zinc-600 shadow-sm rounded h-8 px-1 bg-zinc-800 text-white'
                     {...register(`tabs.${index}.idPreco`)}
+                    title="Adicione ID de PREÇO"
+                  />
+                 {/* {errors.tabs?.[index]?.idPreco && <span className='text-red-500 text-sm'>{errors.tabs?.[index]?.idPreco.message}</span>} */}
+                </div>
+
+                <div className='flex flex-col gap-1'>
+                  <input
+                    type="text"
+                    className='input-number-tab w-14 appearance-none border border-zinc-600 shadow-sm rounded h-8 px-1 bg-zinc-800 text-white'
+                    {...register(`tabs.${index}.idTransf`)}
+                    title="Adicione ID de TRANSFERÊNCIA"
                   />
                  {/* {errors.tabs?.[index]?.idPreco && <span className='text-red-500 text-sm'>{errors.tabs?.[index]?.idPreco.message}</span>} */}
                 </div>
@@ -176,12 +210,14 @@ export function App() {
 
           {errors.tabs && <span className='text-red-500 text-sm'>{errors.tabs.message}</span>}
         </div>
-        <button
-          type='submit'
-          className='bg-emerald-500 rounded font-semibold text-white h-10 hover:bg-emerald-600'
-        >
-          Realizar Cotação
-        </button>
+        <div className="flex items-center justify-end">
+          <button
+            type='submit'
+            className='bg-emerald-500 rounded font-semibold text-white h-10 hover:bg-emerald-600 mb-10 w-[300px] mt-5'
+          >
+            Realizar Cotação
+          </button>
+        </div>
 
       </form>
 
