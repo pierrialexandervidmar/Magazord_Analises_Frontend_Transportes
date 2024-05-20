@@ -9,3 +9,14 @@
 .input-number-tab {
   -moz-appearance: textfield;
 }
+
+
+.grafico1 {
+  width: 500px; 
+  height: 500px;
+}
+
+.grafico2 {
+  width: 500px; 
+  height: 500px;
+}

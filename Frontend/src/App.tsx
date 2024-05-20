@@ -8,6 +8,7 @@ import IdentificadoresForm from './components/identificadores/IdentificadoresFor
 import PeriodoForm from './components/Periodo/PeriodoForm';
 import TabelasForm from './components/Tabelas/TabelasForm';
 import SiglaItem from './components/SiglaItem/SiglaItem';
+import { GerarGraficos } from './helpers/GerarGraficos';
 
 
 // ESQUEMA DO FORMULARIO COM SUAS VALIDAÇÕES DE ENTRADA EMBUTIDAS
@@ -142,13 +143,33 @@ export function App() {
         <div className="flex items-center justify-end">
           <button
             type='submit'
-            className='bg-emerald-500 rounded font-semibold text-white h-10 hover:bg-emerald-600 mb-10 w-[300px] mt-5'
+            className='bg-emerald-500 rounded font-semibold text-white h-10 hover:bg-emerald-600 mb-10 w-[300px] mt-5 mr-5'
           >
             Realizar Cotação
           </button>
         </div>
 
       </form>
+
+
+
+      {/* GRAFICOS ============================================== */}
+      <button
+        onClick={GerarGraficos}
+        className='bg-violet-500 rounded font-semibold text-white h-10 hover:bg-violet-600 mb-1 w-[300px] mt-2'
+      >
+        Gerar Gráficos
+      </button>
+
+      <div className='flex gap-20'>
+        <div className='grafico1'>
+          <canvas id='grafico1'></canvas>
+        </div>
+
+        <div className='grafico2'>
+          <canvas id='grafico2'></canvas>
+        </div>
+      </div>
 
       <pre>
         {output}
