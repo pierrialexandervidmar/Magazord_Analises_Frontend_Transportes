@@ -4,6 +4,10 @@ import './styles/global.css';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { date, z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import IdentificadoresForm from './components/identificadores/IdentificadoresForm';
+import PeriodoForm from './components/Periodo/PeriodoForm';
+import TabelasForm from './components/Tabelas/TabelasForm';
+import SiglaItem from './components/SiglaItem/SiglaItem';
 
 
 // ESQUEMA DO FORMULARIO COM SUAS VALIDAÇÕES DE ENTRADA EMBUTIDAS
@@ -53,7 +57,7 @@ export function App() {
     name: 'tabs',
   })
 
-  // FUNÇÃO PARA ADICIONAR NOVA TABELA - TECH
+  // FUNÇÃO PARA ADICIONAR NOVA SIGLA NA TABELA
   function addNewTech() {
     append({
       sigla: '',
@@ -63,6 +67,7 @@ export function App() {
     })
   }
 
+  // REMOVER UMA SIGLA DA TABELA
   function removerSigla() {
     remove({
       sigla: '',
@@ -74,7 +79,7 @@ export function App() {
 
   // ENVIAR DADOS PARA A API
   function createUser(data: any) {
-    
+
     const adjustedDate = {
       ...data,
       dataInicio: data.dataInicio.toISOString().substring(0, 10),
@@ -97,119 +102,43 @@ export function App() {
       >
 
         {/* FORMULARIO - IDENTIFICADORES */}
-        <div className='flex flex-col gap-1'>
-          <label htmlFor="name">Identificadores (separados por vírgula)</label>
-          <textarea
-            className='border border-zinc-600 shadow-sm rounded h-10 px-3 p-1 bg-zinc-800 text-white'
-            {...register('identificador')}
-          />
-          {errors.identificador && <span className='text-red-500 text-sm'>{errors.identificador.message}</span>}
-        </div>
+        <IdentificadoresForm register={register} errors={errors} />
+
 
         {/* FORMULARIO - PERÍODO */}
-        <div className='flex flex-col gap-1'>
-          <label htmlFor="" className="flex items-center justify-start">
-            Período (até 30 dias)
-          </label>
-          <div className='flex items-center justify-start gap-1'>
-            <div className='flex gap-1'>
-              <input
-                type="date"
-                className='border border-zinc-600 shadow-sm rounded h-8 px-1 bg-zinc-800 text-white'
-                {...register('dataInicio')}
-              />
-              {errors.dataInicio && <span className='text-red-500 text-sm'>{errors.dataInicio.message}</span>}
-            </div>
-            <span>até</span>
-            <div className='flex gap-1'>
-              <input
-                type="date"
-                className='border border-zinc-600 shadow-sm rounded h-8 px-1 bg-zinc-800 text-white'
-                {...register('dataFim')}
-              />
-              {errors.dataFim && <span className='text-red-500 text-sm'>{errors.dataFim.message}</span>}
-            </div>
-          </div>
+        <PeriodoForm register={register} errors={errors} />
 
-        </div>
 
         {/* FORMULÁRIO - TABELAS PARA COTAÇÃO */}
         <div className='flex flex-col gap-1'>
-          <label htmlFor="" className="flex items-center justify-end">
-  
-
-            <button
-              type='button'
-              onClick={addNewTech}
-              className="text-white text-sm mx-2 bg-emerald-500 rounded hover:bg-emerald-600 p-2 mb-5"
-              title="Clique aqui para adicinoar a sigla - SIGLA + PRAZO + PREÇO + TRANSFERÊNCIA"              
-            >
-              Adicionar Sigla
-            </button>
-
-            <button
-              type='button'
-              onClick={removerSigla}
-              className="text-white text-sm mx-2 bg-red-500 rounded hover:bg-red-600 p-2 mb-5"
-              title="Clique aqui para remover a sigla - SIGLA + PRAZO + PREÇO + TRANSFERÊNCIA"
-            >
-              Remover Sigla
-            </button>
-          </label>
+          <TabelasForm
+            fields={fields}
+            register={register}
+            errors={errors}
+            addNewTech={addNewTech}
+            removerSigla={removerSigla}
+          />
 
           {/* RETORNA LISTA DE TABELAS PARA PREENCHER */}
           <div className='flex flex-wrap gap-5'>
-          {fields.map((field, index) => {
-            return (
-              <div className='flex gap-2' key={field.id}>
 
-                <div className='flex flex-2 flex-col gap-1'>
-                  <input
-                    type="text"
-                    className='w-16 first-letter:border text- border-zinc-600 shadow-sm rounded h-8 px-1 bg-zinc-800 text-white'
-                    {...register(`tabs.${index}.sigla`)}
-                    title="Adicione a SIGLA"
-                  />
-                  {errors.tabs?.[index]?.sigla && <span className='text-red-500 text-sm'>{errors.tabs?.[index]?.sigla.message}</span>}
-                </div>
+            {/* Implementando o SiglaItem */}
+            {fields.map((field, index) => (
+              <SiglaItem
+                key={field.id}
+                field={field}
+                index={index}
+                register={register}
+                errors={errors}
+              />
+            ))}
 
-                <div className='flex flex-col gap-1'>
-                  <input
-                    type="text"
-                    className='input-number-tab w-14 appearance-none border border-zinc-600 shadow-sm rounded h-8 px-1 bg-zinc-800 text-white'
-                    {...register(`tabs.${index}.idPrazo`)}
-                    title="Adicione ID de PRAZO"
-                  />
-                  {/* {errors.tabs?.[index]?.idPrazo && <span className='text-red-500 text-sm'>{errors.tabs?.[index]?.idPrazo.message}</span>} */}
-                </div>
-
-                <div className='flex flex-col gap-1'>
-                  <input
-                    type="text"
-                    className='input-number-tab w-14 appearance-none border border-zinc-600 shadow-sm rounded h-8 px-1 bg-zinc-800 text-white'
-                    {...register(`tabs.${index}.idPreco`)}
-                    title="Adicione ID de PREÇO"
-                  />
-                 {/* {errors.tabs?.[index]?.idPreco && <span className='text-red-500 text-sm'>{errors.tabs?.[index]?.idPreco.message}</span>} */}
-                </div>
-
-                <div className='flex flex-col gap-1'>
-                  <input
-                    type="text"
-                    className='input-number-tab w-14 appearance-none border border-zinc-600 shadow-sm rounded h-8 px-1 bg-zinc-800 text-white'
-                    {...register(`tabs.${index}.idTransf`)}
-                    title="Adicione ID de TRANSFERÊNCIA"
-                  />
-                 {/* {errors.tabs?.[index]?.idPreco && <span className='text-red-500 text-sm'>{errors.tabs?.[index]?.idPreco.message}</span>} */}
-                </div>
-
-              </div>
-            )
-          })}
           </div>
 
           {errors.tabs && <span className='text-red-500 text-sm'>{errors.tabs.message}</span>}
         </div>
+
+        {/* REALIZAR COTAÇÃO BUTTON */}
         <div className="flex items-center justify-end">
           <button
             type='submit'
