@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
+    "axios": "^1.7.7",
     "chart.js": "^3.9.1",
     "react": "^18.2.0",
+    "react-dash": "file:",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.3",
     "zod": "^3.23.5"
