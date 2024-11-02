@@ -1,19 +1,30 @@
-import { zodResolver } from '@hookform/resolvers/zod' // Importa o resolver Zod para validação de formulários
-import axios from 'axios'; // Importa a biblioteca Axios para fazer requisições HTTP
-import { useState } from 'react'; // Importa o hook useState para gerenciar estado
-import { useFieldArray, useForm } from 'react-hook-form'; // Importa hooks para gerenciar formulários
-import { date, z } from 'zod'; // Importa funções de validação do Zod
+import { zodResolver } from '@hookform/resolvers/zod'
+// Importa o resolver Zod para validação de formulários
+import axios from 'axios';
+// Importa a biblioteca Axios para fazer requisições HTTP
+import { useState } from 'react';
+// Importa o hook useState para gerenciar estado
+import { useFieldArray, useForm } from 'react-hook-form';
+// Importa hooks para gerenciar formulários
+
+// Importa funções de validação do Zod
+import { date, z } from 'zod';
 
 // Importa componentes personalizados
 import IdentificadoresForm from './components/identificadores/IdentificadoresForm';
 import PeriodoForm from './components/Periodo/PeriodoForm';
+import { ProgressBar } from './components/Progress/Progress';
 import SiglaItem from './components/SiglaItem/SiglaItem';
 import TabelasForm from './components/Tabelas/TabelasForm';
-import { GerarGraficos } from './helpers/GerarGraficos'; // Função para gerar gráficos
-import { construirURL } from './helpers/Urls'; // Função para construir URLs
-
-import './styles/global.css'; // Importa estilos globais
+// Importa estilos globais
 import TokenPortalForm from './components/TokenPortal/TokenPortalForm';
+import { GerarGraficos } from './helpers/GerarGraficos';
+// Função para gerar gráficos
+import { construirURL } from './helpers/Urls';
+
+// Função para construir URLs
+
+import './styles/global.css';
 
 // ESQUEMA DO FORMULÁRIO COM SUAS VALIDAÇÕES DE ENTRADA EMBUTIDAS
 const createUserFormSchema = z.object({
@@ -52,6 +63,17 @@ type CreateUserFormData = z.infer<typeof createUserFormSchema>
 // ESTRUTURA GERAL DO COMPONENTE APP ===================================================================
 export function App() {
   const [output, setOutput] = useState('') // Estado para armazenar a saída da API
+  const [isProgressBarActive, setProgressBarActive] = useState(false);
+  const [key, setKey] = useState(0);
+
+  const iniciarProgresso = () => {
+    setProgressBarActive(true);
+    setKey(prevKey => prevKey + 1);
+  };
+
+  const onProgressComplete = () => {
+    setProgressBarActive(false);
+  };
 
   // UTILIZAÇÃO DO USE-FORM COM SEU TIPO E SCHEMA E VALIDAÇÕES
   const {
@@ -99,11 +121,8 @@ export function App() {
 
     try {
       const response = await axios.get(url); // Faz uma requisição GET usando Axios
-
-      setOutput(JSON.stringify(response.data, null, 2)); // Armazena a resposta formatada no estado
     } catch (error: any) {
       console.error("Erro ao fazer a requisição:", error);
-      setOutput(`Erro: ${error.message}`); // Armazena mensagem de erro no estado
     }
   }
 
@@ -111,15 +130,25 @@ export function App() {
   return (
     <main className="h-screen text-zinc-300 flex flex-col gap-10 items-center justify-start m-5">
       <h1 className="text-emerald-500 text-2xl font-semibold mt-5">Análise de cotações</h1>
+
+     
+      <ProgressBar isActive={isProgressBarActive} onComplete={onProgressComplete} key={key} />
+
       <form
         onSubmit={handleSubmit(realizarCotacao)} // Envia o formulário chamando a função realizarCotacao
         className='flex flex-col gap-2 w-full max-w-screen-2xl'
       >
 
         {/* FORMULÁRIO - IDENTIFICADORES */}
-        <IdentificadoresForm register={register} errors={errors} /> {/* Componente para campos de identificador */}
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <div style={{ flex: 1 }}>
+            <IdentificadoresForm register={register} errors={errors} /> {/* Componente para campos de identificador */}
+          </div>
+          <div style={{ flex: 1 }}>
+            <TokenPortalForm register={register} errors={errors} />
+          </div>
+        </div>
 
-        <TokenPortalForm register={register} errors={errors} />
 
         {/* FORMULÁRIO - PERÍODO */}
         <PeriodoForm register={register} errors={errors} /> {/* Componente para selecionar o período */}
@@ -155,7 +184,7 @@ export function App() {
 
         {/* BOTÃO DE REALIZAR COTAÇÃO */}
         <div className="flex items-center justify-end">
-          <button
+          <button onClick={iniciarProgresso}
             type='submit'
             className='bg-emerald-500 rounded font-semibold text-white h-10 hover:bg-emerald-600 mb-10 w-[300px] mt-5 mr-5'
           >
@@ -182,10 +211,6 @@ export function App() {
           <canvas id='grafico2'></canvas> {/* Elemento de canvas para o segundo gráfico */}
         </div>
       </div>
-
-      <pre>
-        {output} {/* Exibe a saída da API formatada */}
-      </pre>
     </main>
   )
 }

@@ -9,7 +9,7 @@ const IdentificadoresForm: React.FC<IdentificadoresFormProps> = ({ register, err
   return (
     <div className='flex flex-col gap-1'>
       <label htmlFor="name">Identificador</label>
-      <textarea
+      <input
         className='border border-zinc-600 shadow-sm rounded h-10 px-3 p-1 bg-zinc-800 text-white'
         {...register('identificador')}
       />
